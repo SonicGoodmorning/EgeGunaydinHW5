@@ -1,4 +1,6 @@
-import java.util.NoSuchElementException;
+import java.util.*;
+// we importing it all.
+
 public class CircularLinkedList<E> {
     private static class Node<E>{
         E data;
@@ -30,13 +32,13 @@ public class CircularLinkedList<E> {
         if(tail == null){throw new NoSuchElementException("Empty list");}
         return tail.next.data;
     }
-    
+
     public E removeFirst(){
         if(tail == null){throw new NoSuchElementException("Empty list");}
         tail.next = tail.next.next;
         return tail.next.data;
     }
-    
+
     public void rotate(){tail = tail.next;}
 
     public boolean remove(E item){
@@ -79,16 +81,26 @@ public class CircularLinkedList<E> {
     }
 
     public boolean validateStructure(){
-        
+
     }
 
     public String toString(){
+        if(tail == null){return "[]";}
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+
         Node<E> current = tail;
+
         do{
-        System.out.print(current.data + " ");
+        sb.append(current.data);
         current = current.next;
+
+        if(current != tail.next){sb.append(", ");}
+
         } while (current != tail.next);
+        sb.append("]");
+        return sb.toString();
     }
 
-    
+
 }
