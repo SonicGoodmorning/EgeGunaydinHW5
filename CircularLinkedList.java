@@ -81,7 +81,10 @@ public class CircularLinkedList<E> {
     }
 
     public boolean validateStructure(){
-
+        /*
+        validateStructure() checks that exactly size distinct nodes form a ring and that tail is the last node before
+        returning to the front. It must terminate even if the structure contains an incorrect cycle.
+        */
     }
 
     public String toString(){
