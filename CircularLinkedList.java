@@ -22,6 +22,7 @@ public class CircularLinkedList<E> {
             tail = newNode;
             newNode.next = newNode;
         } else {
+        newNode.next = tail.next;
         tail.next = newNode;
         tail = newNode;
         }
@@ -35,39 +36,36 @@ public class CircularLinkedList<E> {
 
     public E removeFirst(){
         if(tail == null){throw new NoSuchElementException("Empty list");}
-        tail.next = tail.next.next;
-        return tail.next.data;
+        Node<E> head = tail.next;
+        E removed = head.data;
+
+        if(size == 1){tail = null;}
+        else{tail.next = head.next;}
+        size--;
+        return removed;
     }
 
-    public void rotate(){tail = tail.next;}
+    public void rotate(){
+        if(tail != null){tail = tail.next;}
+    }
 
     public boolean remove(E item){
         // case 1
         if (tail == null){return false;}
-        Node<E> current = tail;
+        Node<E> previous = tail;
+        Node<E> current = tail.next;
         // case 2
-        if(tail.data.equals(item)){
-
-            if(tail.next == tail){
-                tail = null;
-                return false;
-            }
-            current = tail.next;
-            while(current.next != tail){
-                current = current.next;
-            }
-            current.next = tail.next;
-            tail = current;
-            return true;
-        }
-
-        current = tail;
-
-        while(current.next != tail){
-            if(current.next.data.equals(item)){
-                current.next = current.next.next;
+        for(int i = 0; i < size; i++){
+            if(Objects.equals(current.data, item)){
+                if(size == 1){tail = null;}
+                else {
+                    previous.next = current.next;
+                    if(current == tail){tail = previous;}
+                }
+                size--;
                 return true;
             }
+            previous = current;
             current = current.next;
         }
         return false;
@@ -81,10 +79,23 @@ public class CircularLinkedList<E> {
     }
 
     public boolean validateStructure(){
-        /*
-        validateStructure() checks that exactly size distinct nodes form a ring and that tail is the last node before
-        returning to the front. It must terminate even if the structure contains an incorrect cycle.
-        */
+        if(tail == null){return size == 0;}
+        if(size <= 0){return false;}
+
+        Node<E> last = null;
+        Node<E> head = tail.next;
+        Node<E> current = head; // easier to just get a head from this
+
+        int c = 0;
+
+        while(current != null && c < size){
+            last = current;
+            current = current.next;
+            c++;
+
+            if(current == head && c < size){return false;}
+        }
+        return c == size && current == head && last == tail;
     }
 
     public String toString(){
@@ -92,15 +103,13 @@ public class CircularLinkedList<E> {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
 
-        Node<E> current = tail;
+        Node<E> current = tail.next;
 
-        do{
-        sb.append(current.data);
-        current = current.next;
-
-        if(current != tail.next){sb.append(", ");}
-
-        } while (current != tail.next);
+        for(int i = 0; i < size; i++){
+            sb.append(current.data);
+            if(i < size - 1){sb.append(", ");}
+            current = current.next;
+        }
         sb.append("]");
         return sb.toString();
     }
